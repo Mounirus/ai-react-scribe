@@ -11,8 +11,8 @@ const Information = () => {
         Your <span className="text-blue-400 bold">Transcription</span>
       </h1>
       <div className="grid grid-cols-2 mx-auto items-center bg-white shadow rounded-full overflow-hidden">
-        <button onClick={()=>{setTab('transcription')}} className={"py-2 px-4 duration-200 font-medium "+ (tab==='transcription' ? 'bg-blue-400 text-white' : 'text-blue-400')}>Transcription</button>
-        <button onClick={()=>{setTab('translation')}} className={"py-2 px-4 duration-200 font-medium "+ (tab==='translation' ? 'bg-blue-400 text-white' : 'text-blue-400') }>Translation</button>
+        <button onClick={()=>{setTab('transcription')}} className={"py-2 px-4 duration-200 "+ (tab==='transcription' ? 'bg-blue-300 text-white' : 'text-blue-400')}>Transcription</button>
+        <button onClick={()=>{setTab('translation')}} className={"py-2 px-4 duration-200 "+ (tab==='translation' ? 'bg-blue-300 text-white' : 'text-blue-400') }>Translation</button>
       </div>
       {tab==='transcription' ? <Transcription /> : <Translation />}
     </main>
