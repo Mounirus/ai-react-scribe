@@ -83,7 +83,7 @@ const HomePage = ({ setFile, setAudioStream }) => {
           {recordingStatus === "inactive" ? "Record" : `Stop recording`}
         </p>
         <div className="flex items-center gap-2 ">
-          {duration!==0 && <p className="text-sm ">{duration}s</p>}
+          {duration !== 0 && <p className="text-sm ">{duration}s</p>}
           <i
             className={
               "fa-solid fa-microphone duration-200" +
