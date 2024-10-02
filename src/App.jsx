@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import Header from "./components/Header";
+import { useState, useRef, useEffect } from "react";
 import HomePage from "./components/HomePage";
+import Header from "./components/Header";
 import FileDisplay from "./components/FileDisplay";
-import Information from "./components/information";
+import Information from "./components/Information";
 import Transcribing from "./components/Transcribing";
 import { MessageTypes } from "./utils/presets";
 
@@ -26,8 +26,10 @@ function App() {
   useEffect(() => {
     if (!worker.current) {
       worker.current = new Worker(
-        new URL("./utils/whisper.worker.js", import.meta.url),
-        { type: "module" }
+        new URL("utils/whisper.worker.js", import.meta.url),
+        {
+          type: "module",
+        }
       );
     }
 
@@ -51,32 +53,35 @@ function App() {
           break;
       }
     };
+
     worker.current.addEventListener("message", onMessageReceived);
-    return () => {
+
+    return () =>
       worker.current.removeEventListener("message", onMessageReceived);
-    };
-  }, []);
+  });
 
   async function readAudioFrom(file) {
-    const sampling_rate = 16000
-    const audioCTX = new AudioContext({ sampleRate: sampling_rate })
-    const response = await file.arrayBuffer()
-    const decoded = await audioCTX.decodeAudioData(response)
-    const audio = decoded.getChannelData(0)
-    return audio
+    const sampling_rate = 16000;
+    const audioCTX = new AudioContext({ sampleRate: sampling_rate });
+    const response = await file.arrayBuffer();
+    const decoded = await audioCTX.decodeAudioData(response);
+    const audio = decoded.getChannelData(0);
+    return audio;
   }
 
   async function handleFormSubmission() {
-    if (!file && !audioStream) { return }
+    if (!file && !audioStream) {
+      return;
+    }
 
-    let audio = await readAudioFrom(file ? file : audioStream)
-    const model_name = `openai/whisper-tiny.en`
+    let audio = await readAudioFrom(file ? file : audioStream);
+    const model_name = `openai/whisper-tiny.en`;
 
     worker.current.postMessage({
       type: MessageTypes.INFERENCE_REQUEST,
       audio,
-      model_name
-    })
+      model_name,
+    });
   }
 
   return (
@@ -84,15 +89,15 @@ function App() {
       <section className="min-h-screen flex flex-col">
         <Header />
         {output ? (
-          <Information />
+          <Information output={output} finished={finished} />
         ) : loading ? (
           <Transcribing />
         ) : isAudioAvailable ? (
           <FileDisplay
+            handleFormSubmission={handleFormSubmission}
+            handleAudioReset={handleAudioReset}
             file={file}
             audioStream={audioStream}
-            handleAudioReset={handleAudioReset}
-            handleFormSubmission={handleFormSubmission}
           />
         ) : (
           <HomePage setFile={setFile} setAudioStream={setAudioStream} />

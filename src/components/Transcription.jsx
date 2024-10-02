@@ -1,9 +1,7 @@
-const Transcription = () => {
-  return (
-    <div>
-      Transcription
-    </div>
-  )
-}
+import React from "react";
 
-export default Transcription
+export default function Transcription(props) {
+  const { textElement } = props;
+
+  return <div>{textElement}</div>;
+}
