@@ -10,7 +10,6 @@ const HomePage = ({ setFile, setAudioStream }) => {
 
   async function startRecording() {
     let tempStream;
-
     console.log("Start recording");
 
     try {
@@ -21,36 +20,37 @@ const HomePage = ({ setFile, setAudioStream }) => {
       tempStream = streamData;
     } catch (err) {
       console.log(err.message);
-      alert(err.message);
       return;
     }
     setRecordingStatus("recording");
 
-    // Create a new Media recorder instance using the stream
+    //create new Media recorder instance using the stream
     const media = new MediaRecorder(tempStream, { type: mimeType });
     mediaRecorder.current = media;
 
     mediaRecorder.current.start();
     let localAudioChunks = [];
-    mediaRecorder.current.ondtaavailable = (event) => {
-      if (typeof event.data === "undefined") return;
-      if (event.data.size === 0) return;
-
-      if (event.data.size > 0) {
-        localAudioChunks.push(event.data);
+    mediaRecorder.current.ondataavailable = (event) => {
+      if (typeof event.data === "undefined") {
+        return;
       }
+      if (event.data.size === 0) {
+        return;
+      }
+      localAudioChunks.push(event.data);
     };
     setAudioChunks(localAudioChunks);
   }
 
-  function stopRecording() {
+  async function stopRecording() {
+    setRecordingStatus("inactive");
     console.log("Stop recording");
+
     mediaRecorder.current.stop();
     mediaRecorder.current.onstop = () => {
       const audioBlob = new Blob(audioChunks, { type: mimeType });
       setAudioStream(audioBlob);
       setAudioChunks([]);
-      //setRecordingStatus("inactive");
       setDuration(0);
     };
   }
